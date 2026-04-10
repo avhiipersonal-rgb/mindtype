@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<title>MindType™ — Discover Your Identity</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+:root{
+  --ink:#0a0806;--paper:#f5f0e8;
+  --gold:#c9a84c;--gl:#e8c96a;
+  --gdim:rgba(201,168,76,.1);--gbrd:rgba(201,168,76,.25);
+  --fd:'Cormorant Garamond',serif;
+  --fm:'DM Mono',monospace;--fb:'Bebas Neue',sans-serif;--fs:'Space Grotesk',sans-serif;
+  --px:1.1rem;--r:3px;
+}
+body{background:var(--ink);font-family:var(--fs);color:#f5f0e8;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden;font-size:15px}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px}
+#root{position:relative;z-index:1}
+
+.shell{width:100%;max-width:480px;margin:0 auto;padding-left:var(--px);padding-right:var(--px)}
+.page{min-height:100vh;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3.5rem 0 3rem}
+
+/* LANDING */
+.eyebrow{font-family:var(--fm);font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:1.75rem;display:flex;align-items:center;gap:10px}
+.eyebrow::before,.eyebrow::after{content:'';flex:1;height:1px;background:var(--gbrd)}
+.land-hl{font-family:var(--fd);font-size:clamp(2.3rem,7vw,3.9rem);font-weight:300;line-height:1.1;letter-spacing:-.01em;color:#fff;text-align:center;margin-bottom:1.2rem}
+.land-hl em{font-style:italic;color:var(--gl)}
+.land-sub{font-size:.875rem;color:#7a7268;line-height:1.82;text-align:center;margin:0 auto 1rem;max-width:320px}
+.land-sub strong{color:#c8c0b4;font-weight:500}
+.land-official{font-family:var(--fm);font-size:9.5px;letter-spacing:.1em;color:#5a5248;text-align:center;margin-bottom:.6rem}
+.land-official span{color:var(--gold)}
+.sp-bar{display:flex;align-items:center;justify-content:center;gap:7px;font-family:var(--fm);font-size:9px;letter-spacing:.07em;color:#4a4540;margin-bottom:2.1rem;flex-wrap:wrap;text-align:center}
+.sp-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:.55;flex-shrink:0}
+.cta-wrap{display:flex;flex-direction:column;align-items:center;gap:.65rem;width:100%}
+.btn-primary{background:var(--gold);color:var(--ink);border:none;border-radius:var(--r);font-family:var(--fb);font-size:1.1rem;letter-spacing:.12em;padding:.95rem 2rem;cursor:pointer;width:100%;max-width:340px;transition:background .2s,transform .15s,box-shadow .2s;position:relative;overflow:hidden;display:block}
+.btn-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.2) 50%,transparent 65%);background-size:250% auto;animation:shim 3s linear infinite}
+.btn-primary:hover{background:var(--gl);transform:translateY(-2px);box-shadow:0 8px 28px rgba(201,168,76,.28)}
+.cta-note{font-family:var(--fm);font-size:9px;letter-spacing:.07em;color:#3d3730;text-align:center}
+.trust-strip{display:flex;gap:.9rem;justify-content:center;flex-wrap:wrap;margin-top:1.4rem}
+.trust-item{font-size:11px;color:#5a5248;display:flex;align-items:center;gap:5px;font-family:var(--fm);letter-spacing:.04em}
+.trust-item::before{content:'·';color:var(--gold);font-size:1rem;line-height:1}
+.live-badge{display:inline-flex;align-items:center;gap:7px;margin-top:1.1rem;font-family:var(--fm);font-size:9.5px;letter-spacing:.06em;color:#5a5248;justify-content:center}
+.live-dot{width:5px;height:5px;border-radius:50%;background:#e05454;box-shadow:0 0 6px rgba(224,84,84,.7);animation:pulse 1.8s ease-in-out infinite;flex-shrink:0}
+.live-count{color:var(--gold);font-family:var(--fb);font-size:.9rem;letter-spacing:.06em}
+
+/* QUIZ */
+.quiz-wrap{width:100%;padding:2.25rem 0}
+.prog-row{display:flex;justify-content:space-between;margin-bottom:7px}
+.prog-row span{font-family:var(--fm);font-size:9px;letter-spacing:.1em;text-transform:uppercase}
+.prog-s{color:#5a5248}.prog-p{color:var(--gold)}
+.prog-track{height:1px;background:rgba(255,255,255,.07);position:relative}
+.prog-fill{position:absolute;top:0;left:0;height:100%;background:var(--gold);transition:width .5s cubic-bezier(.22,1,.36,1);box-shadow:0 0 10px rgba(201,168,76,.4)}
+.q-frame{animation:fadeSlide .35s cubic-bezier(.22,1,.36,1) both}
+.q-tag{font-family:var(--fm);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:inline-flex;align-items:center;gap:8px}
+.q-tag::before{content:'';width:16px;height:1px;background:var(--gbrd)}
+.q-text{font-family:var(--fd);font-size:clamp(1.15rem,3.8vw,1.55rem);font-weight:400;line-height:1.38;color:#fff;margin-bottom:1.6rem;letter-spacing:-.005em}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);border-radius:var(--r);padding:.82rem .95rem;cursor:pointer;display:flex;align-items:flex-start;gap:10px;text-align:left;width:100%;transition:background .18s,border-color .18s,transform .18s}
+.opt:hover:not(.sel){background:rgba(201,168,76,.06);border-color:rgba(201,168,76,.22);transform:translateX(3px)}
+.opt.sel{background:rgba(201,168,76,.09);border-color:var(--gold)}
+.opt-key{font-family:var(--fm);font-size:9px;letter-spacing:.1em;color:#5a5248;padding-top:2px;flex-shrink:0;transition:color .18s}
+.opt.sel .opt-key{color:var(--gold)}
+.opt-body{font-size:.85rem;color:#7a7268;line-height:1.48;transition:color .18s}
+.opt.sel .opt-body{color:#ddd8ce}
+.nav-row{display:flex;gap:9px;margin-top:1.6rem}
+.btn-back{background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:var(--r);padding:.72rem .9rem;color:#3d3730;font-family:var(--fm);font-size:9px;letter-spacing:.1em;cursor:pointer;flex-shrink:0;transition:all .2s}
+.btn-back:hover{border-color:rgba(255,255,255,.18);color:#6b6358}
+.btn-next{flex:1;background:var(--gold);color:var(--ink);border:none;border-radius:var(--r);font-family:var(--fb);font-size:.95rem;letter-spacing:.12em;padding:.82rem 1.25rem;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.btn-next::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.18) 50%,transparent 65%);background-size:250% auto;animation:shim 2.5s linear infinite}
+.btn-next:not(.on){opacity:.2;pointer-events:none}
+.btn-next.on:hover{background:var(--gl);transform:translateY(-1px)}
+
+/* REVEAL */
+.reveal-screen{position:fixed;inset:0;z-index:1000;background:var(--ink);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:1.25rem;padding:1.5rem;animation:revealFadeOut 1s 2.5s cubic-bezier(.22,1,.36,1) both}
+.reveal-word{font-family:var(--fb);font-size:clamp(2.4rem,9vw,6rem);letter-spacing:.08em;color:transparent;background:linear-gradient(135deg,var(--gold) 0%,var(--gl) 50%,var(--gold) 100%);-webkit-background-clip:text;background-clip:text;animation:wordPulse 2.5s cubic-bezier(.22,1,.36,1) both;text-align:center}
+.reveal-sub{font-family:var(--fm);font-size:9.5px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;opacity:0;animation:fadein .4s .8s both}
+
+/* RESULT */
+.result-page{padding:1.5rem 0 3.5rem}
+.disc-top{text-align:center;padding:2rem 0 1.5rem}
+.disc-label{font-family:var(--fm);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+.disc-name{font-family:var(--fd);font-size:clamp(1.85rem,6.5vw,3.4rem);font-weight:300;line-height:1.1;color:#fff;letter-spacing:-.015em;margin-bottom:.35rem}
+.disc-name em{font-style:italic;color:var(--gl)}
+.disc-sub{font-family:var(--fm);font-size:9px;letter-spacing:.16em;color:#5a5248;text-transform:uppercase;margin-bottom:1.2rem}
+.disc-hook{font-family:var(--fd);font-style:italic;font-size:1.02rem;font-weight:300;color:#7a7268;max-width:340px;margin:0 auto;line-height:1.65}
+.ornament{display:flex;align-items:center;gap:12px;margin:1.35rem 0;font-family:var(--fm);font-size:9px;letter-spacing:.2em;color:#2a2520;text-transform:uppercase}
+.ornament::before,.ornament::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.055)}
+.scores-section{margin-bottom:1.5rem}
+.scores-label{font-family:var(--fm);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#5a5248;margin-bottom:.85rem}
+.score-rows{display:flex;flex-direction:column;gap:12px}
+.score-row{display:flex;align-items:center;gap:10px}
+.score-row-lbl{font-family:var(--fm);font-size:8.5px;letter-spacing:.04em;color:#5a5248;width:90px;min-width:90px;flex-shrink:0;line-height:1.35}
+.score-bar-wrap{flex:1;height:1.5px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden;min-width:0}
+.score-bar-fill{height:100%;border-radius:999px;transition:width 1s 1s cubic-bezier(.22,1,.36,1)}
+.score-row-val{font-family:var(--fb);font-size:.95rem;letter-spacing:.05em;width:32px;text-align:right;flex-shrink:0}
+.rarity-block{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1rem;background:var(--gdim);border:1px solid var(--gbrd);border-radius:var(--r);margin-bottom:1.5rem;gap:.5rem}
+.rarity-eyebrow{font-family:var(--fm);font-size:8.5px;letter-spacing:.12em;color:#5a5248;text-transform:uppercase;margin-bottom:.2rem}
+.rarity-val{font-family:var(--fb);font-size:1.3rem;letter-spacing:.06em}
+.id-desc-block{border-top:1px solid rgba(255,255,255,.055);border-bottom:1px solid rgba(255,255,255,.055);padding:1.5rem 0;margin-bottom:1.5rem}
+.id-desc-para{font-family:var(--fd);font-size:1rem;font-weight:300;line-height:1.82;color:#7a7268;margin-bottom:.85rem}
+.id-desc-para:last-child{margin-bottom:0}
+.id-desc-para strong{color:#c8c0b4;font-weight:400}
+.level-insight{margin-top:1rem;padding:.85rem 1rem;border-radius:var(--r)}
+.li-label{font-family:var(--fm);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.3rem}
+.li-text{font-family:var(--fd);font-size:.95rem;font-weight:300;line-height:1.65;color:#c8c0b4}
+
+/* CERT SECTION */
+.cert-section{margin-top:.5rem}
+.cert-head{font-family:var(--fd);font-size:1.45rem;font-weight:300;font-style:italic;color:#fff;text-align:center;margin-bottom:.25rem}
+.cert-sub{font-family:var(--fm);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#5a5248;text-align:center;margin-bottom:1.4rem}
+.name-label{font-family:var(--fm);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#7a7268;margin-bottom:.5rem;display:block;width:100%}
+.name-input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:var(--r);padding:.82rem .95rem;color:#e8e0d0;font-size:.9rem;font-family:var(--fs);outline:none;margin-bottom:.95rem;transition:border-color .2s,background .2s;-webkit-appearance:none}
+.name-input::placeholder{color:#2a2520}
+.name-input:focus{border-color:var(--gbrd);background:rgba(201,168,76,.04)}
+.name-input.err{border-color:rgba(220,80,80,.4)}
+
+/* CERT CARD */
+.cert-wrap{position:relative;margin-bottom:1.2rem;border-radius:4px;overflow:hidden;box-shadow:0 4px 50px rgba(0,0,0,.55)}
+.cert-lock-overlay{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.65rem;background:rgba(10,8,6,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.cert-lock-overlay.gone{display:none}
+.cert-lock-icon{font-size:1.75rem}
+.cert-lock-txt{font-family:var(--fm);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--gold);text-align:center;line-height:1.65;white-space:pre-line}
+.cert-wm-name{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-22deg);font-family:var(--fb);font-size:clamp(1.8rem,6vw,2.8rem);letter-spacing:.2em;color:rgba(201,168,76,.15);white-space:nowrap;pointer-events:none;z-index:5;user-select:none;-webkit-user-select:none}
+.cert-card{background:var(--paper);position:relative}
+.cert-inner{padding:1.35rem 1.25rem}
+@media(min-width:400px){.cert-inner{padding:1.7rem 1.55rem}}
+.cert-bg-wm{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;font-family:var(--fb);font-size:5rem;letter-spacing:.3em;color:rgba(0,0,0,.022);transform:rotate(-30deg);white-space:nowrap;overflow:hidden;user-select:none}
+.cert-toprow{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.1rem;border-bottom:1px solid rgba(0,0,0,.08);padding-bottom:.75rem}
+.cert-brand{font-family:var(--fb);font-size:.75rem;letter-spacing:.2em;color:rgba(0,0,0,.3);text-transform:uppercase}
+.cert-seal{width:27px;height:27px;border-radius:50%;border:1.5px solid rgba(201,168,76,.5);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gold)}
+.cert-for{font-family:var(--fm);font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(0,0,0,.35);margin-bottom:.2rem}
+.cert-nm{font-family:var(--fd);font-size:clamp(1.2rem,4vw,1.75rem);font-weight:600;color:#1a1612;margin-bottom:.4rem;letter-spacing:-.02em;line-height:1.08;min-height:1.7rem}
+.cert-tag{display:inline-block;font-family:var(--fm);font-size:7px;letter-spacing:.11em;text-transform:uppercase;padding:3px 9px;border-radius:2px;margin-bottom:.7rem;border:1px solid}
+.cert-ml{font-family:var(--fm);font-size:7.5px;letter-spacing:.14em;color:rgba(0,0,0,.35);text-transform:uppercase;margin-bottom:.2rem}
+.cert-lvl-row{display:flex;align-items:baseline;gap:.25rem;margin-bottom:.15rem;flex-wrap:wrap}
+.cert-lvl-n{font-family:var(--fb);font-size:2.5rem;letter-spacing:.04em;line-height:1}
+.cert-lvl-max{font-family:var(--fd);font-size:.85rem;font-weight:300;font-style:italic;color:rgba(0,0,0,.35);align-self:flex-end;padding-bottom:.12rem}
+.cert-lvl-ttl{font-family:var(--fd);font-size:.83rem;font-style:italic;color:rgba(0,0,0,.4);margin-bottom:.7rem}
+.cert-bar-t{height:2px;border-radius:999px;background:rgba(0,0,0,.08);margin-bottom:.9rem;overflow:hidden}
+.cert-bar-f{height:100%;border-radius:999px}
+.cert-para{font-family:var(--fd);font-size:.84rem;color:rgba(0,0,0,.42);line-height:1.65;margin-bottom:.95rem}
+.cert-foot{display:flex;justify-content:space-between;align-items:flex-end;border-top:1px solid rgba(0,0,0,.08);padding-top:.72rem;flex-wrap:wrap;gap:.4rem}
+.cert-date,.cert-verify{font-family:var(--fm);font-size:7px;color:rgba(0,0,0,.28);letter-spacing:.07em}
+
+/* PRICE */
+.price-block{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.7rem;padding:.85rem .95rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:var(--r);gap:.75rem}
+.price-what{font-family:var(--fm);font-size:8.5px;letter-spacing:.07em;color:#7a7268;line-height:1.85}
+.price-what span{display:block}
+.price-nums{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;gap:1px}
+.price-was{text-decoration:line-through;color:#3d3730;font-family:var(--fm);font-size:.75rem}
+.price-now{font-family:var(--fb);font-size:1.6rem;letter-spacing:.04em;line-height:1.05}
+.price-curr{font-family:var(--fm);font-size:.65rem;color:#5a5248}
+.urgency-strip{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:.7rem;font-family:var(--fm);font-size:8.5px;letter-spacing:.07em;color:#cc5555;text-align:center}
+.urgency-dot{width:5px;height:5px;border-radius:50%;background:#e05454;box-shadow:0 0 6px rgba(224,84,84,.6);animation:pulse 1.5s ease-in-out infinite;flex-shrink:0}
+.pay-note{font-family:var(--fm);font-size:8.5px;color:#7a7268;text-align:center;margin-bottom:.6rem;letter-spacing:.06em;line-height:1.6}
+
+/* SHARE (post-pay) */
+.share-section{margin-top:1.25rem}
+.share-lbl{font-family:var(--fm);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#5a5248;text-align:center;margin-bottom:.85rem}
+.share-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.5rem}
+.btn-share{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:var(--r);padding:.75rem .5rem;font-family:var(--fm);font-size:8.5px;letter-spacing:.06em;color:#5a5248;cursor:pointer;text-align:center;transition:all .2s;line-height:1.35}
+.btn-share:hover{background:rgba(201,168,76,.07);border-color:var(--gbrd);color:var(--gold)}
+.s-wa{border-color:rgba(37,211,102,.15);color:#20953a}.s-wa:hover{background:rgba(37,211,102,.06);border-color:rgba(37,211,102,.3);color:#25d366}
+.s-tg{border-color:rgba(0,136,204,.15);color:#0077b3}.s-tg:hover{background:rgba(0,136,204,.06);border-color:rgba(0,136,204,.3);color:#0088cc}
+.s-ig{border-color:rgba(225,48,108,.15);color:#b02058}.s-ig:hover{background:rgba(225,48,108,.06);border-color:rgba(225,48,108,.3);color:#e1306c}
+.s-snap{border-color:rgba(255,252,0,.12);color:#8a8700}.s-snap:hover{background:rgba(255,252,0,.04);border-color:rgba(255,252,0,.25);color:#c9c200}
+.s-tw{border-color:rgba(29,161,242,.15);color:#0d7ab8}.s-tw:hover{background:rgba(29,161,242,.06);border-color:rgba(29,161,242,.3);color:#1da1f2}
+.s-li{border-color:rgba(10,102,194,.15);color:#0a5e9a}.s-li:hover{background:rgba(10,102,194,.06);border-color:rgba(10,102,194,.3);color:#0a66c2}
+.bottom-proof{margin-top:1rem;text-align:center;font-family:var(--fm);font-size:9px;letter-spacing:.1em;color:#3d3730}
+.bottom-proof span{color:var(--gold);font-family:var(--fb);font-size:.9rem;letter-spacing:.06em}
+.retake-btn{width:100%;margin-top:2rem;background:transparent;border:1px solid rgba(255,255,255,.06);border-radius:var(--r);padding:.8rem;color:#3d3730;font-family:var(--fm);font-size:9px;letter-spacing:.1em;cursor:pointer;transition:all .2s}
+.retake-btn:hover{border-color:rgba(255,255,255,.14);color:#5a5248}
+
+@keyframes shim{0%{background-position:-200% center}100%{background-position:200% center}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes wordPulse{0%{opacity:0;transform:scale(.88) translateY(18px)}20%{opacity:1;transform:scale(1.03) translateY(0)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.06)}}
+@keyframes revealFadeOut{from{opacity:1}to{opacity:0;pointer-events:none}}
+@keyframes su{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.s1{animation:su .5s .08s both cubic-bezier(.22,1,.36,1)}
+.s2{animation:su .5s .16s both cubic-bezier(.22,1,.36,1)}
+.s3{animation:su .5s .24s both cubic-bezier(.22,1,.36,1)}
+.s4{animation:su .5s .32s both cubic-bezier(.22,1,.36,1)}
+.s5{animation:su .5s .4s both cubic-bezier(.22,1,.36,1)}
+.s6{animation:su .5s .48s both cubic-bezier(.22,1,.36,1)}
+
+@media(max-width:400px){
+  :root{--px:.95rem}
+  .land-hl{font-size:2rem}
+  .disc-name{font-size:1.7rem}
+  .q-text{font-size:1.08rem}
+  .opt{padding:.75rem .85rem}
+  .opt-body{font-size:.82rem}
+  .score-row-lbl{font-size:8px;width:82px;min-width:82px}
+  .cert-inner{padding:1.2rem 1.1rem}
+  .cert-nm{font-size:1.2rem}
+  .cert-lvl-n{font-size:2.2rem}
+  .id-desc-para{font-size:.97rem}
+  .share-grid{grid-template-columns:1fr}
+}
+@media(max-width:360px){
+  :root{--px:.8rem}
+  .land-hl{font-size:1.85rem}
+  .disc-name{font-size:1.55rem}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   ▼▼▼  CONFIGURATION — EDIT THESE TWO LINES ONLY  ▼▼▼
+══════════════════════════════════════════════════════════ */
+
+// Paste your Google Apps Script Web App URL here (same URL for both sending + reading)
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwD3vn3JhIT_9DTFPU0s1Z-Ma1xxHcPoIb_YgX-8zApPd_wJy_wujCQJh-cr7upug/exec';
+
+// Your UPI payment link — replace with yours
+// Format: upi://pay?pa=YOUR_UPI_ID&pn=MindType&am=49&cu=INR&tn=MindTypeCertificate
+const UPI_LINK  = 'upi://pay?pa=fainalstudio@ybl@upi&pn=MindType&am=49&cu=INR&tn=MindType+Certificate';
+
+/* ══════════════════════════════════════════════════════════
+   ▲▲▲  END CONFIG — DO NOT EDIT BELOW THIS LINE  ▲▲▲
+══════════════════════════════════════════════════════════ */
+
+/* ── AFFILIATE REF CAPTURE ── */
+const _ref = (()=>{
+  const p = new URLSearchParams(window.location.search);
+  const r = p.get('ref') || 'direct';
+  sessionStorage.setItem('mt_ref', r);
+  return r;
+})();
+
+/* ── TRACKING HELPER ── */
+// Fire-and-forget. Never blocks the user.
+function track(event, extra = {}) {
+  const payload = {
+    ref:       _ref,
+    event:     event,
+    ts:        Date.now(),
+    ua:        navigator.userAgent.slice(0, 80),
+    ...extra
+  };
+  // Use sendBeacon where available (survives page close), fallback to fetch
+  const body = JSON.stringify(payload);
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(SHEET_URL, new Blob([body], { type: 'application/json' }));
+  } else {
+    fetch(SHEET_URL, { method:'POST', body, headers:{'Content-Type':'application/json'} })
+      .catch(()=>{}); // silently ignore
+  }
+}
+
+/* ── FIRE CLICK EVENT ON PAGE LOAD ── */
+track('click');
+</script>
+
+<script type="text/babel">
+const {useState,useRef,useEffect} = React;
+
+/* ══════════════════════════════════════════════
+   IDENTITY DEFINITIONS
+══════════════════════════════════════════════ */
+const IDS={
+  deep_thinker:{type:"ot",title:"The Deep Thinker",subtitle:"High Awareness Mind",tag:"Certified Deep Thinker",accent:"#a78bfa",accentDim:"rgba(167,139,250,.1)",accentBorder:"rgba(167,139,250,.25)",emoji:"🌀",hook:"You don't just think — you process reality at a depth most people never reach.",levelTitle:{high:"Precision Grade",mid:"Depth Grade",low:"Emerging Grade"},paras:["You notice what others scroll past. A shift in tone, a poorly chosen word, an inconsistency buried three layers deep — your brain flags it all.","Most people think in straight lines. You think in webs. Everything connects to everything, and the connections matter.","Yes, it gets exhausting. The mind that never fully rests. But that same mind catches things. Prevents things. Understands what most people miss entirely.","This isn't overthinking. This is depth. Own it."],levels:{high:"Your mind operates like a precision instrument at full calibration. Every detail is signal — nothing is noise.",mid:"You think more than you act, and that's not a flaw. It's how you avoid mistakes others make by moving too fast.",low:"You're more observant than you let on. That quiet processing you do? It's working for you."}},
+  pattern_analyzer:{type:"ot",title:"The Pattern Analyzer",subtitle:"Signal-Over-Noise Mind",tag:"Certified Pattern Analyzer",accent:"#4ade80",accentDim:"rgba(74,222,128,.1)",accentBorder:"rgba(74,222,128,.25)",emoji:"🔍",hook:"Your brain is always indexing, always connecting. You can't turn it off.",levelTitle:{high:"Master Grade",mid:"Analyst Grade",low:"Emerging Grade"},paras:["You catch things. Micro-expressions. Inconsistencies. The thing someone said two weeks ago that contradicts what they're saying now.","Most people call it sensitivity. You know it's data collection. Your brain runs pattern recognition constantly — background process, always on.","Not everyone can read the room. You read the building.","This is a rare cognitive signature. Most people skim. You index."],levels:{high:"You see patterns within patterns. The signal others discard is your default frequency.",mid:"You catch the small things — the ones that end up mattering most.",low:"Your observation skills are developing. You notice more than you realise."}},
+  scenario_architect:{type:"ot",title:"The Scenario Architect",subtitle:"Future-Modelling Mind",tag:"Certified Scenario Architect",accent:"#fb923c",accentDim:"rgba(251,146,60,.1)",accentBorder:"rgba(251,146,60,.25)",emoji:"🔭",hook:"You live 10 steps ahead. The present is just a draft.",levelTitle:{high:"Master Planner",mid:"Active Planner",low:"Developing Planner"},paras:["You've already rehearsed this conversation. And the next three. And what happens if it goes wrong. And the recovery plan for that.","People think you're anxious. You're actually preparing. There's a massive difference — one is reactive, the other is architectural.","Your brain is a simulation engine. It runs futures so you're never caught off guard. That's a cognitive advantage, not a disorder.","Others react to the future. You've already lived several versions of it."],levels:{high:"You've mapped every outcome — including the ones that never materialise. That preparation is the superpower.",mid:"You run mental rehearsals constantly. Not wasted energy — contingency architecture.",low:"You think ahead more than most. The simulations are just warming up."}},
+  hyper_aware:{type:"ot",title:"The Hyper-Aware",subtitle:"Environmental Intelligence",tag:"Certified Hyper-Aware Observer",accent:"#e879f9",accentDim:"rgba(232,121,249,.1)",accentBorder:"rgba(232,121,249,.25)",emoji:"👁️",hook:"You read the room before you've even walked in.",levelTitle:{high:"Apex Grade",mid:"Attuned Grade",low:"Awakening Grade"},paras:["You sense shifts in energy before people speak. Something feels off — and you're usually right before anyone confirms it.","This level of environmental awareness is exhausting precisely because it never stops. You're always processing. Always picking up signal.","But here's what that also means: you're impossible to fool. You see through performance. You feel the gap between what someone says and what they mean.","You're not paranoid. You're perceptive. Completely different thing."],levels:{high:"You're tuned to a frequency most people don't know exists. That's not anxiety — that's radar.",mid:"Your instincts about people and environments are rarely wrong. You just haven't fully trusted them yet.",low:"Your awareness is growing. The signal is getting clearer."}},
+  strategic_mind:{type:"ot",title:"The Strategic Mind",subtitle:"Systems-Level Thinker",tag:"Certified Strategic Mind",accent:"#60a5fa",accentDim:"rgba(96,165,250,.1)",accentBorder:"rgba(96,165,250,.25)",emoji:"🧠",hook:"You play 3D chess while others are still choosing a board game.",levelTitle:{high:"Grand Master Grade",mid:"Tactical Grade",low:"Developing Grade"},paras:["You see the board differently. While most people react to what's happening, you're already three moves ahead.","Your mind maps consequences automatically. You don't choose to think strategically — it's just how you're wired.","What looks like analysis paralysis from the outside is precision loading. You wait until the picture is clear enough to act without waste.","You were built to think ahead. Not everyone has that."],levels:{high:"You've already run every scenario. By the time others are deciding, you've lived the outcome in your head.",mid:"You plan more than you execute — but when you execute, it's precise. That's the signature.",low:"Your strategic instincts are there. They just need more trust."}},
+  insight_driven:{type:"ot",title:"The Insight-Driven",subtitle:"Depth-First Processor",tag:"Certified Insight-Driven Mind",accent:"#2dd4bf",accentDim:"rgba(45,212,191,.1)",accentBorder:"rgba(45,212,191,.25)",emoji:"💡",hook:"You find meaning where others find noise.",levelTitle:{high:"Deep Grade",mid:"Seeking Grade",low:"Awakening Grade"},paras:["Surface-level answers don't satisfy you. You need the why behind the why. The mechanism, not just the outcome.","Your conversations go deep fast. Small talk feels like a different language. Your mind reaches for substance automatically.","Ideas connect for you across domains others keep separate. You see the relationship between things that seem unrelated.","Depth is your natural language. Most people don't speak it."],levels:{high:"You extract meaning from everything. Your brain is always reaching for something more than the obvious.",mid:"You go deeper than most in conversations, decisions, and reflection. That's insight, not obsession.",low:"Your depth is emerging. You ask better questions than you give yourself credit for."}},
+  lastminute:{type:"pc",title:"The Last-Minute Performer",subtitle:"Pressure-Activated Achiever",tag:"Certified Last-Minute Performer",accent:"#f87171",accentDim:"rgba(248,113,113,.1)",accentBorder:"rgba(248,113,113,.25)",emoji:"⚡",hook:"You don't procrastinate. You wait for the right pressure to activate.",levelTitle:{high:"Elite Grade",mid:"Active Grade",low:"Emerging Grade"},paras:["Your best work happened in the last 40 minutes before a deadline. Every time. Without exception.","Others stress about this. They try to change it. You've made peace with it — because the output speaks for itself.","Pressure isn't the enemy of your performance. It's the ignition. Without it, the engine idles. With it, everything sharpens.","You're not lazy. You're unconventionally efficient."],levels:{high:"Deadlines are your fuel. The closer they get, the sharper you become. This is engineering, not accident.",mid:"You coast until it matters. Then you show up. The results validate the method.",low:"You delay a little, but you always come through. Non-standard timing, reliable delivery."}},
+  deadline_warrior:{type:"pc",title:"The Deadline Warrior",subtitle:"Chaos-Fuelled Executor",tag:"Certified Deadline Warrior",accent:"#f97316",accentDim:"rgba(249,115,22,.1)",accentBorder:"rgba(249,115,22,.25)",emoji:"⚔️",hook:"The deadline isn't the enemy. It's the starting pistol.",levelTitle:{high:"Veteran Grade",mid:"Active Grade",low:"Recruit Grade"},paras:["You've submitted things at 11:58pm that looked like they took a week. They took two hours. And they were good.","You don't operate the same way under pressure as others do. Not worse — completely differently. Something activates.","While others are panicking, you're finally focused. The chaos that breaks other people is your natural working environment.","Not the delay. The delivery. That's what defines you."],levels:{high:"You thrive in the fire. When everyone is panicking, you're in the zone. Rare.",mid:"You've mastered last-minute output. Not ideal for everyone — but it works.",low:"You push things to the edge. You pull through. That track record counts."}},
+  creative_delayer:{type:"pc",title:"The Creative Delayer",subtitle:"Incubation-First Thinker",tag:"Certified Creative Delayer",accent:"#c084fc",accentDim:"rgba(192,132,252,.1)",accentBorder:"rgba(192,132,252,.25)",emoji:"🎨",hook:"You're not delaying. You're incubating. There's a real difference.",levelTitle:{high:"Master Grade",mid:"Active Grade",low:"Emerging Grade"},paras:["The best ideas don't come when you sit down to work. They come in the shower, at 2am, mid-scroll, in the pause between two conversations.","You've figured this out — even if you haven't consciously articulated it. You wait because starting too early produces worse output.","Your pauses aren't empty. They're processing. The work is happening before the work begins.","Creativity doesn't run on clocks. And neither do you. That's not a flaw — it's the architecture of how you create."],levels:{high:"You've built an entire creative process around waiting for the idea to arrive fully formed. It usually does.",mid:"You delay because starting feels premature. You're usually right — the idea needed more time.",low:"Your creative process moves at its own pace. That's actually the feature, not the bug."}},
+  momentum_worker:{type:"pc",title:"The Momentum Worker",subtitle:"Flow-State Specialist",tag:"Certified Momentum Worker",accent:"#34d399",accentDim:"rgba(52,211,153,.1)",accentBorder:"rgba(52,211,153,.25)",emoji:"🌊",hook:"You don't build routines. You build momentum — and it takes you further.",levelTitle:{high:"Peak Grade",mid:"Building Grade",low:"Finding Grade"},paras:["You can't just 'start working'. You need conditions — the right mood, the right moment, the right energy alignment.","But when the conditions arrive? You're in flow. Hours disappear. The work becomes automatic.","Your style looks broken from the outside. From the inside, it's a precision system.","The delay is the price of admission. What you produce when locked in — that justifies the entire process."],levels:{high:"When you hit flow, you produce at a level others can't touch. The delay is just the loading screen.",mid:"You need to warm up before you perform. Once you do, the output is real.",low:"You're learning what conditions make you most productive. That self-knowledge is the foundation."}},
+  burst_specialist:{type:"pc",title:"The Burst Specialist",subtitle:"Intensity-Over-Consistency",tag:"Certified Burst Specialist",accent:"#a3e635",accentDim:"rgba(163,230,53,.1)",accentBorder:"rgba(163,230,53,.25)",emoji:"🚀",hook:"You don't work consistently. You work intensely. The output is the same.",levelTitle:{high:"Elite Grade",mid:"Active Grade",low:"Warming Grade"},paras:["You do in two hours what takes others two days. Then you rest. Then you do it again.","The idle time between bursts looks like procrastination. It's actually recovery. Elite athletes call it periodisation.","Your system is sprint, not marathon. Intensity, not duration. You were built for the 2-hour blitz.","The results don't lie. They never have."],levels:{high:"Your bursts are explosive. The recovery time between them is just the reload.",mid:"Your work comes in waves. During the waves — impressive.",low:"You have burst capability. Still figuring out the trigger. That's normal."}},
+  comfort_optimizer:{type:"pc",title:"The Comfort Optimizer",subtitle:"Energy-Conservation Strategist",tag:"Certified Comfort Optimizer",accent:"#fbbf24",accentDim:"rgba(251,191,36,.1)",accentBorder:"rgba(251,191,36,.25)",emoji:"☕",hook:"You aren't avoiding work. You're protecting the energy that makes it worth doing.",levelTitle:{high:"Master Grade",mid:"Calibrating Grade",low:"Awakening Grade"},paras:["You've learned something most people haven't: not all effort is equal. Doing things at the wrong moment costs twice as much and produces half as much.","So you wait. You prepare your environment. You get the conditions right. Others call it procrastination. You call it optimisation.","The output when you're properly set up is noticeably better than when you force it.","Protecting your working state isn't laziness — it's intelligence about how you function best."],levels:{high:"You've mastered the art of arriving ready. The setup costs time, the output covers the cost.",mid:"You're learning when to push and when to wait. The calibration is still developing.",low:"You know something feels off about forced effort. You're right."}},
+  controlled_chaos:{type:"both",title:"The Controlled Chaos",subtitle:"High-Stakes Operator",tag:"Controlled Chaos Mind",accent:"#f472b6",accentDim:"rgba(244,114,182,.1)",accentBorder:"rgba(244,114,182,.25)",emoji:"🌀⚡",hook:"You think deeply AND act under pressure. That combination is rarer than you know.",levelTitle:{high:"Apex Grade",mid:"Active Grade",low:"Emerging Grade"},paras:["From the outside, your process looks like a mess. Overthought, under-started, then executed in a controlled explosion of deadline energy.","From the inside, it's a system. A high-friction, high-output system refined through years of running it.","You've learned to use the tension between analysis and action as fuel. You need stakes.","The chaos isn't a symptom. It's structural. And it's producing."],levels:{high:"High analysis, high pressure, high output — permanently. The chaos is the operating system.",mid:"Your process looks chaotic from outside. It works. That's what matters.",low:"The controlled chaos is finding its shape. The pattern will emerge."}},
+  strategic_delayer:{type:"both",title:"The Strategic Delayer",subtitle:"Calculated Timing Operator",tag:"Certified Strategic Delayer",accent:"#818cf8",accentDim:"rgba(129,140,248,.1)",accentBorder:"rgba(129,140,248,.25)",emoji:"🧠⏳",hook:"You plan meticulously. You execute strategically late. The timing is intentional.",levelTitle:{high:"Master Grade",mid:"Developing Grade",low:"Calibrating Grade"},paras:["You don't procrastinate blindly. You wait until the vision is clear enough to execute with precision.","Your brain loads context, builds the model, runs the scenarios — then when the picture is sharp enough, you move fast and accurate.","What looks like delay is precision loading. What looks like procrastination is waiting for signal clarity.","You've cracked a code most people don't know exists: the right moment to act is not always the earliest possible one."],levels:{high:"Compress, load, release. The delay is the load phase. The output is the release. Calculated.",mid:"You think long, act fast, land well. The gap between planning and doing is narrowing.",low:"The balance between analysis and action is calibrating. The instinct is right."}},
+  mind_action_dualist:{type:"both",title:"The Mind-Action Dualist",subtitle:"Internal Conflict Champion",tag:"Mind-Action Dualist",accent:"#f59e0b",accentDim:"rgba(245,158,11,.1)",accentBorder:"rgba(245,158,11,.25)",emoji:"⚖️",hook:"Your mind pulls one way. Your actions go another. The tension is where you live.",levelTitle:{high:"Champion Grade",mid:"Active Grade",low:"Emerging Grade"},paras:["Your brain is full of plans, perfectly analysed steps, mental rehearsals of exactly how things should go. And then real life intervenes.","Deadlines force action. Panic creates clarity. The gap between your internal model and external reality is where your best work happens.","This duality isn't a disorder. It's a dynamic. A specific kind of creative tension that produces breakthroughs when it resolves.","The war between thought and action in you is constant. But the moments you resolve it — those are your best work."],levels:{high:"The tension between analysis and action is constant. When it resolves — that's your best work.",mid:"You're learning to bridge the analytical mind and the action instinct. Progress is real.",low:"The balance is finding its shape. You're closer than you think."}},
+  paradox_engine:{type:"both",title:"The Paradox Engine",subtitle:"Depth-Meets-Deadline Operator",tag:"Certified Paradox Engine",accent:"#e879f9",accentDim:"rgba(232,121,249,.1)",accentBorder:"rgba(232,121,249,.25)",emoji:"🔮",hook:"You overthink it AND leave it until the last second. Both, simultaneously. Always.",levelTitle:{high:"Apex Grade",mid:"Active Grade",low:"Building Grade"},paras:["You don't just overthink. You also underschedule. The combination creates a specific pressure that somehow produces your best work.","The mental simulation runs for days. The execution happens in hours. The gap between those two timelines is your creative zone.","Most people are either thinkers or doers. You've forced yourself to be both — on the same problem, with competing urgencies.","What most people call chaos, you've turned into a signature. It's not efficient. It's effective."],levels:{high:"Full depth, full pressure, full output. The paradox is the engine. It runs hot, but it runs.",mid:"You think hard and move fast when you have to. The timing is getting more deliberate.",low:"The deep thinking and the deadline crunch are starting to work together."}}
+};
+
+/* ══════════════════════════════════════════════
+   QUESTIONS
+══════════════════════════════════════════════ */
+const QS=[
+  {type:"ot",text:"Do you prepare for conversations that might never happen?",opts:[{t:"Never. That's not how I operate.",s:0},{t:"Occasionally, just to be ready.",s:1},{t:"Frequently — I have mental scripts for most scenarios.",s:2},{t:"Full rehearsals. Including rebuttals. For conversations that don't exist yet.",s:3}]},
+  {type:"ot",text:"You said something mildly awkward three days ago. Current status?",opts:[{t:"Forgot it happened.",s:0},{t:"Thought about it briefly. Moved on.",s:1},{t:"Still replaying it periodically.",s:2},{t:"Filed under 'evidence I am broken as a person'.",s:3}]},
+  {type:"ot",text:"Someone reads your message and doesn't reply for four hours.",opts:[{t:"They're busy. Normal.",s:0},{t:"I notice it, then let it go.",s:1},{t:"I start building a theory about what I did wrong.",s:2},{t:"I've drafted an apology for something I didn't do.",s:3}]},
+  {type:"ot",text:"Before making a decision, you typically:",opts:[{t:"Decide quickly and adjust if wrong.",s:0},{t:"Think it through briefly, then commit.",s:1},{t:"Run every possible outcome in your head.",s:2},{t:"Run every outcome, then question your methodology for running outcomes.",s:3}]},
+  {type:"ot",text:"At 2am, your brain is:",opts:[{t:"Asleep.",s:0},{t:"Winding down like a normal person.",s:1},{t:"Replaying cringe moments at random.",s:2},{t:"Hosting a courtroom trial for something I said in 2019.",s:3}]},
+  {type:"ot",text:"How long do you spend editing a message before sending?",opts:[{t:"Type and send. Done.",s:0},{t:"Quick re-read. Fix a typo.",s:1},{t:"Rewrote it five times to calibrate the tone.",s:2},{t:"Drafted it last night. Slept on it. Still reconsidering.",s:3}]},
+  {type:"pc",text:"'I'll start in five minutes.' What actually happens?",opts:[{t:"I start in five minutes.",s:0},{t:"More like twenty. Still fine.",s:1},{t:"Three hours later, full panic, I begin.",s:2},{t:"'Five minutes' is a sound I make before disappearing.",s:3}]},
+  {type:"pc",text:"Your to-do list from last week:",opts:[{t:"Done.",s:0},{t:"Mostly done.",s:1},{t:"A heritage document. Untouched.",s:2},{t:"I added more tasks. Growth mindset.",s:3}]},
+  {type:"pc",text:"A task is due in three days. When do you start?",opts:[{t:"Day one. Planning, execution, done early.",s:0},{t:"Day two. Responsible-ish.",s:1},{t:"Night of day three. Fuelled by panic.",s:2},{t:"I submit at 11:59 and call it 'day three in my timezone'.",s:3}]},
+  {type:"pc",text:"How do you feel about deadlines?",opts:[{t:"Comforting. They keep me structured.",s:0},{t:"Fine. I work within them.",s:1},{t:"They're when I actually start.",s:2},{t:"Deadlines are my business partner. We meet at 11:58pm.",s:3}]},
+  {type:"pc",text:"Your email inbox:",opts:[{t:"Managed. Near zero.",s:0},{t:"A few hundred. Under control.",s:1},{t:"Thousands. I've accepted it.",s:2},{t:"Thousands. Plus drafts to all of them I never sent.",s:3}]},
+  {type:"hybrid",text:"You have a significant decision to make. Your process:",opts:[{t:"Decide, act, adjust. Simple.",s:0},{t:"Think briefly, then commit.",s:1},{t:"Analyse for days, then act at the last second.",s:2},{t:"Analyse for weeks, miss the window entirely.",s:3}]},
+  {type:"hybrid",text:"Night before something important:",opts:[{t:"Prepared and resting.",s:0},{t:"Slightly nervous but ready.",s:1},{t:"Spiralling mentally AND just starting the prep work.",s:2},{t:"Full doomsday scenarios AND haven't started. Both. Simultaneously.",s:3}]},
+  {type:"hybrid",text:"Right now, there's probably something you:",opts:[{t:"Have already handled.",s:0},{t:"Have planned to handle soon.",s:1},{t:"Have been overthinking and haven't started.",s:2},{t:"Have been overthinking, feel guilty about, and are avoiding by taking this quiz.",s:3}]},
+];
+
+/* ══════════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════════ */
+function shuffle(a){return[...a].sort(()=>Math.random()-.5)}
+function buildSession(){
+  const ot=shuffle(QS.filter(q=>q.type==="ot")).slice(0,2);
+  const pc=shuffle(QS.filter(q=>q.type==="pc")).slice(0,2);
+  const hy=shuffle(QS.filter(q=>q.type==="hybrid")).slice(0,1);
+  return shuffle([...ot,...pc,...hy]);
+}
+function toLvl(s){return Math.min(9,Math.round((s/15)*9))}
+function getLB(l){return l>=7?"high":l>=4?"mid":"low"}
+function pickId(ot,pc){
+  const ol=toLvl(ot),pl=toLvl(pc),T=5;
+  if(ol>=T&&pl>=T){
+    const pool=Object.values(IDS).filter(i=>i.type==="both");
+    return{id:pool[Math.min(Math.floor(((ol+pl)/18)*pool.length),pool.length-1)],otLvl:ol,pcLvl:pl};
+  }
+  if(ol>=pl){
+    const pool=Object.values(IDS).filter(i=>i.type==="ot");
+    return{id:pool[Math.min(Math.floor((ol/9)*(pool.length-1)),pool.length-1)],otLvl:ol,pcLvl:pl};
+  }
+  const pool=Object.values(IDS).filter(i=>i.type==="pc");
+  return{id:pool[Math.min(Math.floor((pl/9)*(pool.length-1)),pool.length-1)],otLvl:ol,pcLvl:pl};
+}
+const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const getToday=()=>new Date().toLocaleDateString("en-IN",{year:"numeric",month:"long",day:"numeric"});
+
+/* ══════════════════════════════════════════════
+   CERTIFICATE CARD COMPONENT
+══════════════════════════════════════════════ */
+function CertCard({id,name,otLvl,pcLvl,locked}){
+  const lvl=id.type==="both"?Math.max(otLvl,pcLvl):id.type==="ot"?otLvl:pcLvl;
+  const bucket=getLB(lvl);const dn=name||"Your Name";
+  return React.createElement("div",{className:"cert-wrap"},
+    React.createElement("div",{className:`cert-lock-overlay${locked?"":" gone"}`},
+      React.createElement("div",{className:"cert-lock-icon"},"🔒"),
+      React.createElement("div",{className:"cert-lock-txt"},
+        locked&&name?`${name}'s certificate\nis locked until payment`:"Pay to unlock\nyour certificate"
+      )
+    ),
+    locked&&name&&React.createElement("div",{className:"cert-wm-name"},dn),
+    React.createElement("div",{className:"cert-card"},
+      React.createElement("div",{className:"cert-bg-wm"},"MINDTYPE"),
+      React.createElement("div",{className:"cert-inner"},
+        React.createElement("div",{className:"cert-toprow"},
+          React.createElement("div",{className:"cert-brand"},"MindType™"),
+          React.createElement("div",{className:"cert-seal"},"✦")
+        ),
+        React.createElement("div",{className:"cert-for"},"This certifies that"),
+        React.createElement("div",{className:"cert-nm"},dn),
+        React.createElement("div",{className:"cert-tag",style:{background:id.accentDim,color:id.accent,borderColor:id.accentBorder}},id.tag),
+        React.createElement("div",null,
+          React.createElement("div",{className:"cert-ml"},"Mastery Level"),
+          React.createElement("div",{className:"cert-lvl-row"},
+            React.createElement("span",{className:"cert-lvl-n",style:{color:id.accent}},lvl),
+            React.createElement("span",{className:"cert-lvl-max"},` / 9 · ${id.levelTitle[bucket]}`)
+          ),
+          React.createElement("div",{className:"cert-lvl-ttl"},id.subtitle)
+        ),
+        React.createElement("div",{className:"cert-bar-t"},
+          React.createElement("div",{className:"cert-bar-f",style:{width:`${Math.round((lvl/9)*100)}%`,background:id.accent}})
+        ),
+        React.createElement("div",{className:"cert-para"},id.paras[0]),
+        React.createElement("div",{className:"cert-foot"},
+          React.createElement("div",{className:"cert-date"},`Issued: ${getToday()}`),
+          React.createElement("div",{className:"cert-verify"},"MINDTYPE™ VERIFIED")
+        )
+      )
+    )
+  );
+}
+
+/* ══════════════════════════════════════════════
+   LANDING
+══════════════════════════════════════════════ */
+function Landing({onStart,social}){
+  return React.createElement("div",{className:"page"},
+    React.createElement("div",{className:"shell",style:{width:"100%"}},
+      React.createElement("div",{className:"eyebrow s1"},"Behavioural Identity System"),
+      React.createElement("h1",{className:"land-hl s2"},
+        "Stop Calling It",React.createElement("br",null),
+        "A ",React.createElement("em",null,"Flaw"),". It's Your",React.createElement("br",null),"Identity."
+      ),
+      React.createElement("p",{className:"land-sub s3"},
+        "Five questions. Calibrated scoring.",React.createElement("br",null),
+        React.createElement("strong",null,"Discover who you actually are"),
+        " — and why it's not the problem you think it is."
+      ),
+      React.createElement("div",{className:"land-official s3"},"Make it official. ",React.createElement("span",null,"Save it. Share it.")),
+      React.createElement("div",{className:"sp-bar s3"},
+        "Already being shared on",
+        React.createElement("span",{className:"sp-dot"}),
+        React.createElement("span",null,"Instagram"),
+        React.createElement("span",{className:"sp-dot"}),
+        React.createElement("span",null,"LinkedIn"),
+        React.createElement("span",{className:"sp-dot"}),
+        React.createElement("span",null,"WhatsApp")
+      ),
+      React.createElement("div",{className:"cta-wrap s4"},
+        React.createElement("button",{className:"btn-primary",onClick:onStart},"Begin Your Discovery →"),
+        React.createElement("div",{className:"cta-note"},"Free to take · Results in 60 seconds · ₹49 to make it official")
+      ),
+      React.createElement("div",{className:"trust-strip s5"},
+        ["Behaviourally grounded","No account needed","Free to take"].map(t=>
+          React.createElement("span",{key:t,className:"trust-item"},t)
+        )
+      ),
+      React.createElement("div",{className:"live-badge s6"},
+        React.createElement("span",{className:"live-dot"}),
+        React.createElement("span",{className:"live-count"},social),
+        React.createElement("span",null," identities discovered today")
+      )
+    )
+  );
+}
+
+/* ══════════════════════════════════════════════
+   QUIZ
+══════════════════════════════════════════════ */
+function Quiz({questions,current,selected,onSelect,onNext,onBack}){
+  const q=questions[current];
+  const pct=Math.round(((current+1)/questions.length)*100);
+  const KEYS=["A","B","C","D"];
+  const tl=q.type==="ot"?"Awareness":q.type==="pc"?"Execution":"Behaviour";
+  return React.createElement("div",{className:"page",style:{justifyContent:"flex-start",paddingTop:"2.5rem"}},
+    React.createElement("div",{className:"shell",style:{width:"100%"}},
+      React.createElement("div",{className:"quiz-wrap"},
+        React.createElement("div",{style:{marginBottom:"2rem"}},
+          React.createElement("div",{className:"prog-row"},
+            React.createElement("span",{className:"prog-s"},`${current+1} / ${questions.length}`),
+            React.createElement("span",{className:"prog-p"},`${pct}%`)
+          ),
+          React.createElement("div",{className:"prog-track"},
+            React.createElement("div",{className:"prog-fill",style:{width:`${pct}%`}})
+          )
+        ),
+        React.createElement("div",{className:"q-frame",key:current},
+          React.createElement("div",{className:"q-tag"},tl),
+          React.createElement("div",{className:"q-text"},q.text),
+          React.createElement("div",{className:"opts"},
+            q.opts.map((opt,i)=>
+              React.createElement("button",{
+                key:i,
+                className:`opt${selected&&selected.t===opt.t?" sel":""}`,
+                onClick:()=>onSelect(opt)
+              },
+                React.createElement("span",{className:"opt-key"},KEYS[i]),
+                React.createElement("span",{className:"opt-body"},opt.t)
+              )
+            )
+          ),
+          React.createElement("div",{className:"nav-row"},
+            current>0
+              ? React.createElement("button",{className:"btn-back",onClick:onBack},"← Back")
+              : React.createElement("div",null),
+            React.createElement("button",{
+              className:`btn-next${selected?" on":""}`,
+              onClick:onNext
+            }, current===questions.length-1 ? "Reveal My Identity" : "Continue →")
+          )
+        )
+      )
+    )
+  );
+}
+
+/* ══════════════════════════════════════════════
+   REVEAL
+══════════════════════════════════════════════ */
+function Reveal({identity}){
+  return React.createElement("div",{className:"reveal-screen"},
+    React.createElement("div",{className:"reveal-word"},identity.title),
+    React.createElement("div",{className:"reveal-sub"},"Your identity has been determined")
+  );
+}
+
+/* ══════════════════════════════════════════════
+   RESULT
+══════════════════════════════════════════════ */
+function Result({id,otLvl,pcLvl,rarity,social,name,setName,nameErr,onPay,payState,onRetake}){
+  const lvl=id.type==="both"?Math.max(otLvl,pcLvl):id.type==="ot"?otLvl:pcLvl;
+  const bucket=getLB(lvl);
+  const paid=payState==="done";
+  const otPct=Math.round((otLvl/9)*100);
+  const pcPct=Math.round((pcLvl/9)*100);
+
+  const sText=encodeURIComponent(`🧠 I just discovered my Mind Identity!\n\nI'm *${id.title}*\n\n"${id.hook}"\n\nFind yours → mindtype.co`);
+  const sUrl=encodeURIComponent('https://mindtype.co');
+  const shareMap={
+    wa:`https://wa.me/?text=${sText}`,
+    tg:`https://t.me/share/url?url=${sUrl}&text=${sText}`,
+    tw:`https://twitter.com/intent/tweet?text=${sText}`,
+    ig:'https://www.instagram.com/',
+    snap:'https://www.snapchat.com/',
+    li:`https://www.linkedin.com/sharing/share-offsite/?url=${sUrl}`
+  };
+  const sh=(k)=>window.open(shareMap[k],'_blank');
+
+  return React.createElement("div",{className:"shell result-page"},
+
+    /* Discovery header */
+    React.createElement("div",{className:"disc-top s1"},
+      React.createElement("div",{className:"disc-label"},"Identity Determined"),
+      React.createElement("h1",{className:"disc-name"},React.createElement("em",null,id.emoji+" "),id.title),
+      React.createElement("div",{className:"disc-sub"},id.subtitle),
+      React.createElement("div",{className:"disc-hook"},`"${id.hook}"`)
+    ),
+
+    React.createElement("div",{className:"ornament s2"},"·  ·  ·"),
+
+    /* Scores */
+    React.createElement("div",{className:"scores-section s3"},
+      React.createElement("div",{className:"scores-label"},"Your Indices"),
+      React.createElement("div",{className:"score-rows"},
+        [{label:"Overthinking",lvl:otLvl,pct:otPct},{label:"Procrastination",lvl:pcLvl,pct:pcPct}].map(sc=>
+          React.createElement("div",{key:sc.label,className:"score-row"},
+            React.createElement("div",{className:"score-row-lbl"},sc.label),
+            React.createElement("div",{className:"score-bar-wrap"},
+              React.createElement("div",{className:"score-bar-fill",style:{width:`${sc.pct}%`,background:id.accent}})
+            ),
+            React.createElement("div",{className:"score-row-val",style:{color:id.accent}},`${sc.lvl}/9`)
+          )
+        )
+      )
+    ),
+
+    /* Rarity */
+    React.createElement("div",{className:"rarity-block s4"},
+      React.createElement("div",null,
+        React.createElement("div",{className:"rarity-eyebrow"},"Identity Rarity"),
+        React.createElement("div",{className:"rarity-val",style:{color:id.accent}},`Top ${rarity}%`)
+      ),
+      React.createElement("div",{style:{fontSize:"1.35rem"}},rarity<=15?"🔥":rarity<=25?"⚡":"✨")
+    ),
+
+    /* Description */
+    React.createElement("div",{className:"id-desc-block s5"},
+      id.paras.map((p,i)=>
+        React.createElement("p",{key:i,className:"id-desc-para"},
+          i===0 ? React.createElement(React.Fragment,null,React.createElement("strong",null,p)) : p
+        )
+      ),
+      React.createElement("div",{
+        className:"level-insight",
+        style:{background:id.accentDim,border:`1px solid ${id.accentBorder}`}
+      },
+        React.createElement("div",{className:"li-label",style:{color:id.accent}},"Your Level"),
+        React.createElement("div",{className:"li-text"},id.levels[bucket])
+      )
+    ),
+
+    /* Certificate section */
+    React.createElement("div",{className:"cert-section s6"},
+      React.createElement("h2",{className:"cert-head"},"Make it official."),
+      React.createElement("p",{className:"cert-sub"},"Your certified identity document"),
+
+      React.createElement("label",{className:"name-label"},"Your name for the certificate"),
+      React.createElement("input",{
+        className:`name-input${nameErr?" err":""}`,
+        type:"text",placeholder:"Enter your full name…",maxLength:28,
+        value:name,onChange:e=>setName(e.target.value),autoComplete:"off"
+      }),
+
+      React.createElement(CertCard,{id,name,otLvl,pcLvl,locked:!paid}),
+
+      /* Pricing */
+      React.createElement("div",{className:"price-block"},
+        React.createElement("div",{className:"price-what"},
+          React.createElement("span",null,"Certificate PDF · 2 pages"),
+          React.createElement("span",null,"All social platforms"),
+          React.createElement("span",null,"Instant download · Verified")
+        ),
+        React.createElement("div",{className:"price-nums"},
+          React.createElement("span",{className:"price-was"},"₹99"),
+          React.createElement("span",{className:"price-now",style:{color:id.accent}},"₹49"),
+          React.createElement("span",{className:"price-curr"},"today only")
+        )
+      ),
+
+      React.createElement("div",{className:"urgency-strip"},
+        React.createElement("span",{className:"urgency-dot"}),
+        "Limited certificates remaining today"
+      ),
+
+      /* Pay button */
+      paid
+        ? React.createElement("button",{
+            className:"btn-primary",
+            style:{maxWidth:"100%",borderRadius:"3px",marginBottom:".5rem",background:"#16a34a",cursor:"default"}
+          },"✓ Payment Received — Share Below")
+        : React.createElement("button",{
+            className:"btn-primary",
+            style:{maxWidth:"100%",borderRadius:"3px",marginBottom:".5rem",opacity:payState==="loading"?.65:1},
+            onClick:()=>onPay()
+          }, payState==="loading" ? "⏳ Opening payment…" : "Pay ₹49 via UPI →"),
+
+      React.createElement("p",{className:"pay-note"},
+        paid
+          ? "Payment confirmed. Your identity is officially certified."
+          : "Tap the button → complete UPI payment → tap 'I've Paid' below"
+      ),
+
+      /* After UPI opens, show confirmation button */
+      !paid && payState==="waiting" &&
+        React.createElement("button",{
+          className:"btn-primary",
+          style:{maxWidth:"100%",borderRadius:"3px",marginBottom:".5rem",
+                 background:"rgba(255,255,255,.06)",border:"1px solid rgba(255,255,255,.15)",
+                 color:"#c8c0b4",marginTop:".5rem"},
+          onClick:()=>onPay('confirm')
+        },"✓ I've Paid — Unlock My Certificate"),
+
+      React.createElement("p",{style:{textAlign:"center",fontFamily:"'DM Mono',monospace",fontSize:"8.5px",letterSpacing:".09em",color:"#3d3730",marginBottom:"1rem"}},"Personalised · PDF · Shareable · Instant"),
+
+      /* Post-pay share */
+      paid && React.createElement("div",{className:"share-section"},
+        React.createElement("div",{className:"share-lbl"},"Share your identity"),
+        React.createElement("div",{className:"share-grid"},
+          [{k:"wa",l:"WhatsApp 💬",c:"s-wa"},{k:"tg",l:"Telegram ✈️",c:"s-tg"},
+           {k:"ig",l:"Instagram 📸",c:"s-ig"},{k:"snap",l:"Snapchat 👻",c:"s-snap"},
+           {k:"tw",l:"Twitter 🐦",c:"s-tw"},{k:"li",l:"LinkedIn 💼",c:"s-li"}]
+          .map(s=>React.createElement("button",{key:s.k,className:`btn-share ${s.c}`,onClick:()=>sh(s.k)},s.l))
+        ),
+        React.createElement("div",{className:"bottom-proof"},
+          React.createElement("span",null,social)," people received their certificate today"
+        )
+      )
+    ),
+
+    React.createElement("button",{className:"retake-btn",onClick:onRetake},"↺  Retake the Assessment")
+  );
+}
+
+/* ══════════════════════════════════════════════
+   APP
+══════════════════════════════════════════════ */
+function App(){
+  const [phase,setPhase]=useState("landing");
+  const [questions,setQuestions]=useState([]);
+  const [current,setCurrent]=useState(0);
+  const [selected,setSelected]=useState(null);
+  const [prevA,setPrevA]=useState([]);
+  const [otScore,setOtScore]=useState(0);
+  const [pcScore,setPcScore]=useState(0);
+  const [identity,setIdentity]=useState(null);
+  const [otLvl,setOtLvl]=useState(0);
+  const [pcLvl,setPcLvl]=useState(0);
+  const [rarity]=useState(()=>rnd(10,35));
+  const [social]=useState(()=>rnd(30,70));
+  const [name,setName]=useState("");
+  const [nameErr,setNameErr]=useState(false);
+  const [payState,setPayState]=useState("idle"); // idle | waiting | done
+  const [showReveal,setShowReveal]=useState(false);
+  const top=()=>window.scrollTo({top:0,behavior:"smooth"});
+
+  function startQuiz(){
+    setQuestions(buildSession());setCurrent(0);setSelected(null);
+    setPrevA([]);setOtScore(0);setPcScore(0);setPhase("quiz");top();
+  }
+
+  function handleNext(){
+    if(!selected)return;
+    const q=questions[current];
+    const aOt=q.type==="ot"||q.type==="hybrid"?selected.s:0;
+    const aPc=q.type==="pc"||q.type==="hybrid"?selected.s:0;
+    const nOt=otScore+aOt,nPc=pcScore+aPc;
+    setPrevA([...prevA,{opt:selected,aOt,aPc}]);setOtScore(nOt);setPcScore(nPc);
+    if(current<questions.length-1){setCurrent(current+1);setSelected(null);}
+    else{
+      const res=pickId(nOt,nPc);setIdentity(res.id);setOtLvl(res.otLvl);setPcLvl(res.pcLvl);
+      setShowReveal(true);
+      setTimeout(()=>{setShowReveal(false);setPhase("result");top();},3200);
+    }
+  }
+
+  function handleBack(){
+    if(current===0)return;
+    const pa=[...prevA];const last=pa.pop();setPrevA(pa);
+    setOtScore(otScore-last.aOt);setPcScore(pcScore-last.aPc);
+    setCurrent(current-1);setSelected(null);
+  }
+
+  function handlePay(action){
+    if(action==='confirm'){
+      // User says they've paid — trust them + unlock + track
+      setPayState("done");
+      track('payment',{name,identity:identity.title,ref:_ref});
+      return;
+    }
+    if(!name.trim()){setNameErr(true);setTimeout(()=>setNameErr(false),2500);return;}
+    // Open UPI link and move to waiting state
+    setPayState("waiting");
+    // Build deep-link with prefilled name in the note
+    const upiWithNote = UPI_LINK + `&tn=MindType+${encodeURIComponent(name)}`;
+    window.location.href = upiWithNote;
+    // Track that pay button was tapped (before UPI redirect)
+    track('pay_tap',{name,identity:identity.title});
+  }
+
+  function handleRetake(){setPhase("landing");setName("");setPayState("idle");top();}
+
+  return React.createElement("div",null,
+    showReveal&&identity&&React.createElement(Reveal,{identity}),
+    phase==="landing"&&React.createElement(Landing,{onStart:startQuiz,social}),
+    phase==="quiz"&&React.createElement(Quiz,{questions,current,selected,onSelect:setSelected,onNext:handleNext,onBack:handleBack}),
+    phase==="result"&&identity&&React.createElement(Result,{
+      id:identity,otLvl,pcLvl,rarity,social,
+      name,setName,nameErr,
+      onPay:handlePay,payState,onRetake:handleRetake
+    })
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App,null));
+</script>
+</body>
+</html>
